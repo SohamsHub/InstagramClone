@@ -9,46 +9,49 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-900 flex justify-center items-center h-screen">
-    <div class="bg-gray-800 text-white w-96 rounded-2xl shadow-lg">
-        <div class="flex justify-between items-center p-4 border-b border-gray-700">
+    <div class="bg-gray-800 text-white w-96 rounded-lg shadow-lg">
+        <!-- Header -->
+        <div class="flex justify-between items-center px-4 py-3 border-b border-gray-700">
             <h2 class="text-lg font-semibold">Followers</h2>
-            <button class="text-2xl font-semibold text-gray-400" onclick="window.history.back()">&times;</button>
+            <button class="text-xl font-semibold text-gray-400 hover:text-gray-200" onclick="window.history.back()">&times;</button>
         </div>
 
-
-        <div class="flex border-b border-gray-700">
-            <button class="w-1/2 py-3 text-center font-medium text-white bg-gray-800 border-b-2 border-gray-400">People</button>
-            <button class="w-1/2 py-3 text-center font-medium text-gray-400 bg-gray-800">Hashtags</button>
+        <!-- Tabs -->
+        <div class="flex text-center text-gray-400 border-b border-gray-700">
+            <button class="w-1/2 py-3 text-sm font-semibold text-white border-b-2 border-blue-500">People</button>
+            <button class="w-1/2 py-3 text-sm font-semibold hover:text-white">Hashtags</button>
         </div>
 
+        <!-- Search Bar -->
         <div class="p-4 border-b border-gray-700">
-            <input type="text" placeholder="Search" class="w-full p-2 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" placeholder="Search" class="w-full py-2 px-3 text-sm bg-gray-700 rounded-md placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
 
-
+        <!-- Followers List -->
         <ul class="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-700">
             {% if followers %}
                 {% for profile in profiles %}
-                    <a href="{% url 'profile' profile.obj.user %}">
-                        <li class="flex items-center p-4 border-b border-gray-700">
+                    <li class="flex items-center px-4 py-3 border-b border-gray-700 hover:bg-gray-700 transition duration-200">
+                        <a href="{% url 'profile' profile.obj.user %}" class="flex items-center w-full">
                             <img src="{{ profile.obj.image.url }}" alt="Profile" class="w-10 h-10 rounded-full mr-3">
                             <div class="flex-grow">
-                                <h3 class="text-sm font-medium">{{ profile.obj.user.username }}</h3>
-                                <p class="text-xs text-gray-400">{{profile.obj.first_name}} {{profile.obj.last_name}}</p>
+                                <h3 class="text-sm font-medium text-white">{{ profile.obj.user.username }}</h3>
+                                <p class="text-xs text-gray-400">{{ profile.obj.first_name }} {{ profile.obj.last_name }}</p>
                             </div>
-                            {% if request.user.is_authenticated and request.user != profile.obj.user %} 
-                            {% if profile.follow_status == True %}
-                            <a href="{% url 'follow' profile.obj.user 0 %}" class="btn profile-edit-btn px-4 py-1 text-sm font-medium text-white bg-gray-700 rounded-full">Following</a>
-                            {% else %}
-                            <a href="{% url 'follow' profile.obj.user 1 %}" class="btn profile-edit-btn px-4 py-1 text-sm font-medium text-white bg-blue-600 rounded-full">Follow</a>
-                            {% endif %}
-                            {% endif %}
-                        </li>
-                    </a>
-                        
+                        </a>
+                        {% if request.user.is_authenticated and request.user != profile.obj.user %}
+                            <div>
+                                {% if profile.follow_status %}
+                                    <a href="{% url 'follow' profile.obj.user 0 %}" class="px-4 py-1 text-sm font-medium text-white-500 bg-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200">Following</a>
+                                {% else %}
+                                    <a href="{% url 'follow' profile.obj.user 1 %}" class="px-4 py-1 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-500 transition-all duration-200">Follow</a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </li>
                 {% endfor %}
             {% else %}
-                <div class="text-center py-10">
+                <div class="text-center py-10 text-gray-400">
                     You don't have any followers yet
                 </div>
             {% endif %}
